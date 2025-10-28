@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Competition {
+  id                 Int                @id
+  name               String
+  country            String?
+  type               String?
+  seasonCurrentStart DateTime?
+  seasonCurrentEnd   DateTime?
+  teams              TeamSeasonStat[]
+  players            PlayerSeasonStat[]
+  matches            Match[]
+}
+
+model Team {
+  id        Int                @id
+  name      String
+  shortName String?
+  country   String?
+  founded   Int?
+  logoUrl   String?
+  seasons   TeamSeasonStat[]
+  home      Match[]            @relation("homeTeam")
+  away      Match[]            @relation("awayTeam")
+  players   PlayerSeasonStat[]
+}
+
+model Player {
+  id          Int                @id
+  name        String
+  position    String?
+  birthDate   DateTime?
+  nationality String?
+  photoUrl    String?
+  seasons     PlayerSeasonStat[]
+}
+
+model Match {
+  id            Int      @id
+  competitionId Int
+  season        String
+  utcKickoff    DateTime
+  status        String
+  homeTeamId    Int
+  awayTeamId    Int
+  scoreHome     Int?
+  scoreAway     Int?
+
+  competition Competition @relation(fields: [competitionId], references: [id])
+  homeTeam    Team        @relation("homeTeam", fields: [homeTeamId], references: [id])
+  awayTeam    Team        @relation("awayTeam", fields: [awayTeamId], references: [id])
+}
+
+model PlayerSeasonStat {
+  playerId      Int
+  teamId        Int
+  competitionId Int
+  season        String
+  minutes       Int?
+  goals         Int?
+  assists       Int?
+  shots         Int?
+  xg            Float?
+  xa            Float?
+
+  player      Player      @relation(fields: [playerId], references: [id])
+  team        Team        @relation(fields: [teamId], references: [id])
+  competition Competition @relation(fields: [competitionId], references: [id])
+
+  @@id([playerId, teamId, competitionId, season])
+}
+
+model TeamSeasonStat {
+  teamId        Int
+  competitionId Int
+  season        String
+  played        Int?
+  wins          Int?
+  draws         Int?
+  losses        Int?
+  gf            Int?
+  ga            Int?
+  xg            Float?
+  xga           Float?
+
+  team        Team        @relation(fields: [teamId], references: [id])
+  competition Competition @relation(fields: [competitionId], references: [id])
+
+  @@id([teamId, competitionId, season])
+}
+
+model SourceRef {
+  localType  String
+  localId    Int
+  provider   String
+  providerId String
+
+  @@id([localType, localId, provider])
+}

@@ -1,0 +1,7 @@
+cat > .gitignore <<'GIT'
+node_modules
+dist
+.env
+.prisma
+coverage
+GIT

@@ -1,0 +1,85 @@
+paths:
+  /health:
+    get:
+      summary: Health check
+      responses: { '200': { description: OK } }
+
+  /api/leagues:
+    get:
+      summary: List leagues (for dropdowns)
+      parameters:
+        - in: query
+          name: country
+          schema: { type: string }
+        - in: query
+          name: season
+          schema: { oneOf: [{ type: string }, { type: integer }] }
+        - in: query
+          name: name
+          schema: { type: string }
+      responses: { '200': { description: OK } }
+
+  /api/teams:
+    get:
+      summary: Teams by league (accepts leagueId or leagueName)
+      parameters:
+        - in: query
+          name: leagueId
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: leagueName
+          schema: { type: string }
+        - in: query
+          name: season
+          schema: { oneOf: [{ type: string }, { type: integer }] }
+      responses: { '200': { description: OK } }
+
+  /api/players:
+    get:
+      summary: Players by team (accepts teamId or teamName; supports pagination or all=true)
+      parameters:
+        - in: query
+          name: teamId
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: teamName
+          schema: { type: string }
+        - in: query
+          name: leagueId
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: leagueName
+          schema: { type: string }
+        - in: query
+          name: season
+          required: true
+          schema: { oneOf: [{ type: string }, { type: integer }] }
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: all
+          schema: { type: boolean }
+      responses: { '200': { description: OK } }
+
+  /api/teams/statistics:
+    get:
+      summary: Team aggregate stats (accepts ids or names)
+      parameters:
+        - in: query
+          name: leagueId
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: leagueName
+          schema: { type: string }
+        - in: query
+          name: teamId
+          schema: { type: integer, minimum: 1 }
+        - in: query
+          name: teamName
+          schema: { type: string }
+        - in: query
+          name: season
+          required: true
+          schema: { oneOf: [{ type: string }, { type: integer }] }
+      responses: { '200': { description: OK } }
