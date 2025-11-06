@@ -1,21 +1,17 @@
 import { Outlet } from "react-router-dom";
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
 import CommandPalette from "../CommandPalette";
 
 export default function DashboardLayout() {
   return (
-    <div className="mx-auto w-full max-w-[1440px] px-6">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       <CommandPalette />
-      <div className="container mx-auto px-4">
-        <div className="flex gap-6 py-6">
-          <Sidebar />
-          <main className="flex-1">
-            <Outlet />
-          </main>
+      <main className="flex-1 px-8 py-6 overflow-x-hidden">
+        <div className="max-w-[1400px] mx-auto">
+          <Outlet />
         </div>
-      </div>
+      </main>
     </div>
   );
 }

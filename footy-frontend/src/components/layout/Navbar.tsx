@@ -1,35 +1,60 @@
-import { Trophy, Users, Swords, Shield } from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { LayoutGrid, Trophy, Users, Swords, Moon, Sun } from "lucide-react";
 import { cn } from "../../lib/utils";
-import { ThemeToggle } from "../ui/ThemeToggle";
+import { useTheme } from "../../lib/theme";
 
-const NavItem = ({ to, children }: { to:string; children:React.ReactNode }) => (
+const NavItem = ({ to, icon: Icon, label }: { to: string; icon: any; label: string }) => (
   <NavLink
     to={to}
-    className={({isActive}) => cn(
-      "px-3 py-2 rounded-lg text-sm transition",
-      isActive ? "bg-blue-600 text-white" : "hover:bg-gray-100 dark:hover:bg-gray-800"
-    )}
+    className={({ isActive }) =>
+      cn(
+        "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+        isActive
+          ? "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-200"
+          : "hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
+      )
+    }
   >
-    {children}
+    <Icon className="h-4 w-4" />
+    {label}
   </NavLink>
 );
 
 export default function Navbar() {
+  const { theme, toggle } = useTheme();
+
   return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/80 dark:bg-black/60 border-b border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        <Link to="/" className="flex items-center gap-2 font-semibold">
-          <Trophy className="h-5 w-5 text-blue-600" /> Footy Compare
-        </Link>
-        <nav className="flex items-center gap-2">
-          <NavItem to="/">Leagues</NavItem>
-          <NavItem to="/teams"><Shield className="h-4 w-4 mr-1" />Teams</NavItem>
-          <NavItem to="/players"><Users className="h-4 w-4 mr-1" />Players</NavItem>
-          <NavItem to="/compare"><Swords className="h-4 w-4 mr-1" />Compare</NavItem>
-          <ThemeToggle />
-        </nav>
+    <nav className="border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+      <div className="max-w-[1400px] mx-auto px-8 py-4">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            <Trophy className="h-6 w-6 text-blue-600" />
+            <span className="text-xl font-bold">Footy</span>
+          </div>
+
+          {/* Navigation Links */}
+          <div className="flex items-center gap-2">
+            <NavItem to="/" icon={LayoutGrid} label="Leagues" />
+            <NavItem to="/teams" icon={Trophy} label="Teams" />
+            <NavItem to="/players" icon={Users} label="Players" />
+            <NavItem to="/compare" icon={Swords} label="Compare" />
+          </div>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={toggle}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </button>
+        </div>
       </div>
-    </header>
+    </nav>
   );
 }
